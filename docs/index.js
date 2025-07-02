@@ -407,7 +407,7 @@ function solveSudoku(vals) {
     }
   }
   yy(variants)
-  if (ansvar == 0) {
+  if (ansvar === 0) {
     return false
   }
   if (ansvar.length == 0) {

@@ -197,7 +197,7 @@ function solve() {
     alert("Слишком мало данных")
     return
   }
-  if (fl || !validv(values)) {
+  if (fl || !ValidateVariants(values)) {
     alert("Данные не правильные")
     return
   }
@@ -233,7 +233,7 @@ function solveSudoku(vals) {
   }
 
 
-  function go(variants) {
+  function solveVariantsByRules(variants) {
     variants = JSON.parse(JSON.stringify(variants))
 
     let done = false
@@ -359,66 +359,66 @@ function solveSudoku(vals) {
     }
     return variants
   }
-  function countv(variants) {
+  function countVariants(variants) {
     let v = 0
     for (let i in variants) {
       v += variants[i].length
     }
     return v
   }
-  function validans(variants) {
+  function validateAnswer(variants) {
     for (let i in variants) {
       if (variants[i].length != 1 || variants[i][0] == 0 || variants[i][0] == "") return false
     }
     return true
   }
-  variants = go(variants)
-  let ansvar = []
-  let brFl = false
-  let c = 0
-  function yy(variants) {
-    if (countv(variants) > 81) {
-      for (let va in variants) {
-        if (brFl) break
-        for (let i in variants[va]) {
-          if (brFl) break
+  variants = solveVariantsByRules(variants)
+  let resultVariant = []
+  let breakFlag = false
+  let countRecursion = 0
+  function enumeration(variants) {
+    if (countVariants(variants) > 81) {
+      for (let cell in variants) {
+        if (breakFlag) break
+        for (let variant in variants[cell]) {
+          if (breakFlag) break
 
-          if (variants[va].length == 1) {
+          if (variants[cell].length == 1) {
             continue
           }
-          let variants1 = JSON.parse(JSON.stringify(variants))
-          variants1[va] = [variants[va][i]]
-          c++
-          if (c > 500) {
-            brFl = true
-            ansvar = 0
+          let variantsCopy = JSON.parse(JSON.stringify(variants))
+          variantsCopy[cell] = [variants[cell][variant]]
+          countRecursion++
+          if (countRecursion > 500) {
+            breakFlag = true
+            resultVariant = 0
           }
-          let ne = go(variants1)
-          if (validans(ne)) {
-            brFl = true
-            ansvar = ne
+          let newVariants = solveVariantsByRules(variantsCopy)
+          if (validateAnswer(newVariants)) {
+            breakFlag = true
+            resultVariant = newVariants
             return
           }
           else {
-            if (validv(ne)) yy(ne)
+            if (ValidateVariants(newVariants)) enumeration(newVariants)
           }
         }
       }
     }
   }
-  yy(variants)
-  if (ansvar === 0) {
+  enumeration(variants)
+  if (resultVariant === 0) {
     return false
   }
-  if (ansvar.length == 0) {
-    ansvar = variants
+  if (resultVariant.length == 0) {
+    resultVariant = variants
   }
-  for (let i of ansvar) {
+  for (let i of resultVariant) {
     ans.push(i[0])
   }
   return ans
 }
-function validv(variants) {
+function ValidateVariants(variants) {
   variants = JSON.parse(JSON.stringify(variants))
   if (typeof variants[0] == "number") {
     for (let i in variants) {
@@ -428,26 +428,26 @@ function validv(variants) {
     }
   }
   //убираем варианты из той же строки
-  for (let i in variants) {
-    if (variants[i].length != 1 || variants[i] == 0) {
+  for (let cell in variants) {
+    if (variants[cell].length != 1 || variants[cell] == 0) {
       continue
     }
 
-    let rownumb = Math.floor(i / 9)
+    let rownumb = Math.floor(cell / 9)
     for (let j = rownumb * 9; j < (rownumb + 1) * 9; j++) {
-      if (j != i) {
-        if (variants[i][0] == variants[j][0] && variants[j].length == 1) {
+      if (j != cell) {
+        if (variants[cell][0] == variants[j][0] && variants[j].length == 1) {
           return false
         }
       }
     }
 
     //убираем варианты из того же столбца
-    let columnnumb = i % 9
+    let columnnumb = cell % 9
     for (let j in variants) {
       if (columnnumb == j % 9) {
-        if (j != i) {
-          if (variants[i][0] == variants[j][0] && variants[j].length == 1) {
+        if (j != cell) {
+          if (variants[cell][0] == variants[j][0] && variants[j].length == 1) {
             return false
           }
         }
@@ -455,12 +455,12 @@ function validv(variants) {
     }
 
     //убираем варианты из того же квадрата
-    let rowSqnumb = Math.floor(Math.floor(i / 9) / 3)
-    let colSqumb = Math.floor(i % 9 / 3)
+    let rowSqnumb = Math.floor(Math.floor(cell / 9) / 3)
+    let colSqumb = Math.floor(cell % 9 / 3)
     for (let j in variants) {
       if (colSqumb == Math.floor(j % 9 / 3) && rowSqnumb == Math.floor(Math.floor(j / 9) / 3)) {
-        if (j != i) {
-          if (variants[i][0] == variants[j][0] && variants[j].length == 1) {
+        if (j != cell) {
+          if (variants[cell][0] == variants[j][0] && variants[j].length == 1) {
             return false
           }
         }

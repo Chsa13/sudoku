@@ -1,0 +1,64 @@
+body, html{
+  font-family:Arial,Helvetica,Garuda,sans-serif;
+  margin: unset;
+}
+div.root{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sudoku-layer{
+  align-items: flex-start;
+  display: flex;
+}
+.sudoku-layer .button-layer{
+  display: flex;
+  flex-direction: column;
+}
+.sudoku-layer button{
+  margin: 5px 20px;
+  font-size: 20px;
+  height: max-content;
+}
+.sudoku-layer table{
+  border: 3px solid black;
+  border-left: 6px solid black;
+  border-top: 6px solid black;
+  border-spacing: 0px;
+}
+.sudoku-layer td{
+  height: 70px;
+  width: 70px;
+  border: 1px solid black;
+}
+.sudoku-layer tr.under td{
+  border-bottom: 3px solid black;
+}
+.sudoku-layer td.right{
+  border-right: 3px solid black;
+}
+.sudoku-layer td>input{
+  text-align: center;
+  font-size: 40px;
+  padding: unset;
+  border: none;
+  width: inherit;
+  height: inherit;
+}
+.sudoku-layer.solved td>input:not(.user){
+  color: #a90000;
+  font-weight: bold;
+  font-style: italic;
+}
+.examples-box{
+  display: flex;
+  flex-direction: column;
+}
+.examples-layer .title{
+  font-size: 25px;
+}
+.examples-layer{
+  margin-right: 20px;
+  font-size: 25px;
+}
